@@ -11,8 +11,9 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, HttpUrl
 from typing import Optional
+from datetime import datetime
 
 # Example schemas (replace with your own):
 
@@ -37,6 +38,20 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# Finance management schemas
+
+class Entry(BaseModel):
+    """
+    Finance entries like receipts or transactions with optional screenshot link.
+    Collection name: "entry"
+    """
+    amount: float = Field(..., ge=0, description="Monetary amount of the entry")
+    currency: str = Field("USD", min_length=3, max_length=5, description="Currency code")
+    screenshot_url: Optional[HttpUrl] = Field(None, description="URL to a screenshot or receipt image")
+    note: Optional[str] = Field(None, max_length=280, description="Short note or description")
+    category: Optional[str] = Field(None, description="Category like Food, Travel, Bills")
+    occurred_at: Optional[datetime] = Field(None, description="When the transaction occurred")
 
 # Add your own schemas here:
 # --------------------------------------------------
